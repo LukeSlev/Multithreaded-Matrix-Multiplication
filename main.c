@@ -7,7 +7,7 @@
 #include "lab1_IO.h"
 #include "timer.h"
 
-int    thread_count;
+int   thread_count;
 int** A;
 int** B;
 int** C;
@@ -19,20 +19,23 @@ void* threadfunc(void* rank) {
   int x = floor(my_rank/sqrt(thread_count));
   int y = my_rank % (int)sqrt(thread_count);
 
-  int my_first_row = (n*x)/(int)sqrt(thread_count);
-  int my_last_row = (n*(x+1))/(int)sqrt(thread_count) -1;
+  int my_first_row = (n*x)/(int)sqrt((double)thread_count);
+  int my_last_row = (n*(x+1))/(int)sqrt((double)thread_count);
 
   int my_first_col = (n*y)/(int)sqrt(thread_count);
-  int my_last_col = (n*(y+1))/(int)sqrt(thread_count) -1;
+  int my_last_col = (n*(y+1))/(int)sqrt(thread_count);
 
   printf("rank:%li x:%i y:%i\n",my_rank,x,y);
-  printf("Yo fr;%i lr:%i fc:%i lc:%i\n",my_first_row,my_last_row,my_first_col,my_last_row);
-  for (i = my_first_row; i <= my_last_row; i++) {
-    for (j = my_first_col; j <= my_last_col; j++) {
-      C[i][j] = 0;
+  printf("Yo fr:%i lr:%i fc:%i lc:%i\n",my_first_row,my_last_row,my_first_col,my_last_row);
+  for (i = my_first_row; i < my_last_row; i++) {
+    for (j = my_first_col; j < my_last_col; j++) {
+      printf("i:%i j:%i\n",i,j);
+      int sum = 0;
       for (k = 0; k < n; k++) {
-        C[i][j] += A[i][k]*B[k][j];
+        printf("C:%i A:%i * B:%i | i:%i j:%i k:%i\n",C[i][j],A[i][k],B[k][j],i,j,k);
+        sum += A[i][k]*B[k][j];
       }
+      C[i][j] = sum;
     }
   }printf("done\n");
 
@@ -43,7 +46,7 @@ void* threadfunc(void* rank) {
 /*------------------------------------------------------------------*/
 int main(int argc, char* argv[]) {
   double     start, end;
-  long       thread;
+  long       thread, thread2;
   pthread_t* thread_handles;
   int        i;
 
@@ -60,15 +63,15 @@ int main(int argc, char* argv[]) {
 
   thread_handles = malloc(thread_count*sizeof(pthread_t));
 
+
+  Lab1_loadinput(&A, &B, &n);
+
   C = malloc(n * sizeof(int*));
 
   for (i = 0; i < n; i++)
   {
     C[i] = malloc(n * sizeof(int));
   }
-
-  Lab1_loadinput(&A, &B, &n);
-
   // Check if n**2 is divisible by thread_count
   if ( (int)(n*n)% thread_count != 0) {
     printf("N*N not divisible by thread_count dummy");
@@ -80,8 +83,8 @@ int main(int argc, char* argv[]) {
     pthread_create(&thread_handles[thread], NULL,
         threadfunc, (void*) thread);
 
-  for (thread = 0; thread < thread_count; thread++)
-    pthread_join(thread_handles[thread], NULL);
+  for (thread2 = 0; thread2 < thread_count; thread2++)
+    pthread_join(thread_handles[thread2], NULL);
   GET_TIME(end);
 
   Lab1_saveoutput(C, &n, end-start);

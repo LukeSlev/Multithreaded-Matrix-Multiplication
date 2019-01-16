@@ -26,6 +26,9 @@ CC := gcc
 default:  $(objects) $(headers)  main.o lab1_IO.o
 	$(CC) $(LDFLAGS) $(CFLAGS) -o matrixmultiplier lab1_IO.o main.o
 
+sanitize: $(objects) $(headers)  main.o lab1_IO.o
+	$(CC) $(LDFLAGS) $(CFLAGS) $(threadSan) -o matrixmultiplier lab1_IO.o main.o
+
 matrixgen: matrixgen.o
 	$(CC) $(CFLAGS) $(DEBUGFLAG) -o matrixgen matrixgen.o
 
