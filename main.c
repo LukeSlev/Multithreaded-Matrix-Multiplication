@@ -25,19 +25,15 @@ void* threadfunc(void* rank) {
   int my_first_col = (n*y)/(int)sqrt(thread_count);
   int my_last_col = (n*(y+1))/(int)sqrt(thread_count);
 
-  printf("rank:%li x:%i y:%i\n",my_rank,x,y);
-  printf("Yo fr:%i lr:%i fc:%i lc:%i\n",my_first_row,my_last_row,my_first_col,my_last_row);
   for (i = my_first_row; i < my_last_row; i++) {
     for (j = my_first_col; j < my_last_col; j++) {
-      printf("i:%i j:%i\n",i,j);
       int sum = 0;
       for (k = 0; k < n; k++) {
-        printf("C:%i A:%i * B:%i | i:%i j:%i k:%i\n",C[i][j],A[i][k],B[k][j],i,j,k);
         sum += A[i][k]*B[k][j];
       }
       C[i][j] = sum;
     }
-  }printf("done\n");
+  }
 
   return NULL;
 }
