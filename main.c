@@ -19,8 +19,8 @@ void* threadfunc(void* rank) {
   int x = floor(my_rank/sqrt(thread_count));
   int y = my_rank % (int)sqrt(thread_count);
 
-  int my_first_row = (n*x)/(int)sqrt((double)thread_count);
-  int my_last_row = (n*(x+1))/(int)sqrt((double)thread_count);
+  int my_first_row = (n*x)/(int)sqrt(thread_count);
+  int my_last_row = (n*(x+1))/(int)sqrt(thread_count);
 
   int my_first_col = (n*y)/(int)sqrt(thread_count);
   int my_last_col = (n*(y+1))/(int)sqrt(thread_count);
@@ -51,10 +51,13 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
   thread_count = atoi(argv[1]);
+  if (thread_count <= 0){
+    printf("Invalid argument\n");
+    exit(1);
+  }
   if (sqrt(thread_count)*sqrt(thread_count) != thread_count) {
     printf("Thread count not a square number!!");
     exit(1);
-    // Usage(argv[0]);
   }
 
   thread_handles = malloc(thread_count*sizeof(pthread_t));
