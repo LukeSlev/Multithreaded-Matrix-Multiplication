@@ -38,6 +38,23 @@ void* threadfunc(void* rank) {
   return NULL;
 }
 
+void freeArray(int **array, int n) {
+  /*
+    Frees the memory allocated to a two-dimensional array
+
+    -----
+    Input:
+    int **array:  Array to free
+    int n:        Size of the array to free
+  */
+  int i;
+  for (i = 0; i < n; i++)
+  {
+    free(array[i]);
+  }
+  free(array);
+}
+
 
 /*------------------------------------------------------------------*/
 int main(int argc, char* argv[]) {
@@ -47,7 +64,7 @@ int main(int argc, char* argv[]) {
   int        i;
 
   if (argc != 2) {
-    printf("Wrong number of args dude");
+    printf("Wrong number of args dude\n");
     exit(1);
   }
   thread_count = atoi(argv[1]);
@@ -56,7 +73,7 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
   if (sqrt(thread_count)*sqrt(thread_count) != thread_count) {
-    printf("Thread count not a square number!!");
+    printf("Thread count not a square number!!\n");
     exit(1);
   }
 
@@ -73,7 +90,7 @@ int main(int argc, char* argv[]) {
   }
   // Check if n**2 is divisible by thread_count
   if ( (int)(n*n)% thread_count != 0) {
-    printf("N*N not divisible by thread_count dummy");
+    printf("N*N not divisible by thread_count dummy\n");
     exit(1);
   }
 
@@ -89,9 +106,9 @@ int main(int argc, char* argv[]) {
   Lab1_saveoutput(C, &n, end-start);
 
 
-  free(A);
-  free(B);
-  free(C);
+  freeArray(A, n);
+  freeArray(B, n);
+  freeArray(C, n);
 
   return 0;
 }  /* main */
